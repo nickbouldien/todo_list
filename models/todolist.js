@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
         TodoList.hasMany(models.Todo, {
           foreignKey: 'todoListId',
           as: 'todos'
-        }
+        })
       }
     }
   });

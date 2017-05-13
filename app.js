@@ -3,7 +3,7 @@ var expressLayouts = require('express-ejs-layouts')
 // requiring our new body-parser
 var bodyParser = require('body-parser')
 // Model requires
-// var List = require('./models').List
+var TodoList = require('./models').TodoList
 // var Todo = require('./models').Todo
 
 var app = express()
@@ -14,11 +14,14 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(expressLayouts)
 
 app.get('/', function (request, response) {
-  // load all the lists
-  //List.all().then(function(lists){
-    // render those lists in the index view
-    response.render('index') //, {'lists': lists})
-  });
+  TodoList.findAll().then(function(todoLists){
+    response.render('index', {todoLists: todoLists})
+  }).catch(function(error){
+    response.send("Error, couldn't fetch TodoLists")
+  })
+});
+
+
 
 
 app.listen(3000, function () {
