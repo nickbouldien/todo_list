@@ -5,7 +5,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        TodoList.hasMany(models.Todo, {
+        TodoList.hasMany(models.Todo,{
           foreignKey: 'todoListId',
           as: 'todos'
         })

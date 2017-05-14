@@ -1,5 +1,3 @@
-//todo
-
 'use strict';
 module.exports = {
   up: function(queryInterface, Sequelize) {
@@ -24,7 +22,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-      todoListId: {
+      todoListId:{                   // <- This is the new attribute
         type: Sequelize.INTEGER,
         onDelete: 'CASCADE',
         references: {
