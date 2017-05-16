@@ -20,6 +20,7 @@ app.get('/', function (request, response) {
   })
 });
 
+//get certain todo list
 app.get('/todo-list/:id', function(request, response) {
   TodoList.findById(request.params.id,
     {include: [{
@@ -33,6 +34,7 @@ app.get('/todo-list/:id', function(request, response) {
   })
 })
 
+//mark todo as complete
 app.post('/todo-list/:todoListId/todo/:id/complete', function(request, response){
   Todo.findById(request.params.id).then(function(todo){
     todo.isComplete = true
@@ -44,8 +46,30 @@ app.post('/todo-list/:todoListId/todo/:id/complete', function(request, response)
   })
 })
 
+//new todo
+app.post('/todo-list/:todoListId/todo/new', function(request, response){
+  TodoList.findById(request.params.todoListId).then(function(todoList){
+    return todoList.createTodo({
+      name: request.body.name,
+      isComplete: false
+    })
+  }).then(function(todo){
+    response.redirect("/todo-list/" + request.params.todoListId)
+  }).catch(function(error){
+    response.send("Error, couldn't create Todo")
+  })
+})
 
-
+//delete todos
+app.post('/todo-list/:todoListId/todo/:id/delete', function(request, response){
+  Todo.findById(request.params.id).then(function(todo){
+    return todo.destroy()
+  }).then(function(todo){
+    response.redirect("/todo-list/" + request.params.todoListId)
+  }).catch(function(error){
+    response.send("Error, couldn't fetch Todo")
+  })
+})
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
