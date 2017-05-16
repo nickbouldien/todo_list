@@ -1,12 +1,11 @@
 var express = require('express')
 var expressLayouts = require('express-ejs-layouts')
-// requiring our new body-parser
 var bodyParser = require('body-parser')
-// Model requires
 var TodoList = require('./models').TodoList
-// var Todo = require('./models').Todo
+var Todo = require('./models').Todo
 
 var app = express()
+app.use(express.static('public'))
 app.set('view engine', 'ejs')
 
 //let the app know we want to use body-parser to handle form data
@@ -20,6 +19,30 @@ app.get('/', function (request, response) {
     response.send("Error, couldn't fetch TodoLists")
   })
 });
+
+app.get('/todo-list/:id', function(request, response) {
+  TodoList.findById(request.params.id,
+    {include: [{
+      model: Todo,
+      as: 'todos'
+    }]
+  }).then(function(todoList){
+    response.render('todo-list', {todoList: todoList, todos: todoList.todos})
+  }).catch(function(error){
+    response.send("Error, couldn't fetch TodoLists")
+  })
+})
+
+app.post('/todo-list/:todoListId/todo/:id/complete', function(request, response){
+  Todo.findById(request.params.id).then(function(todo){
+    todo.isComplete = true
+    return todo.save()
+  }).then(function(todo){
+    response.redirect("/todo-list/" + request.params.todoListId)
+  }).catch(function(error){
+    response.send("Error, couldn't fetch Todo")
+  })
+})
 
 
 
